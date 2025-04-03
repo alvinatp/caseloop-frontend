@@ -182,18 +182,18 @@ export default function LandingPage() {
 
       <main className="flex-1 flex flex-col">
         {/* Hero Section */}
-        <section className="container flex-1 py-12 md:py-24 lg:py-32 mx-auto max-w-7xl px-4">
-          <div className="grid gap-10 lg:grid-cols-2 lg:gap-16 items-center">
-            <div className="space-y-6">
-              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
+        <section className="container flex-1 py-8 md:py-16 lg:py-32 mx-auto max-w-7xl px-4">
+          <div className="grid gap-8 lg:grid-cols-2 lg:gap-16 items-center">
+            <div className="space-y-4 md:space-y-6">
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
                 CaseSync: Up-to-date Resources for Case Managers
               </h1>
-              <p className="text-muted-foreground text-lg md:text-xl max-w-[700px] mb-8">
+              <p className="text-muted-foreground text-base sm:text-lg md:text-xl max-w-[700px] mb-4 md:mb-8">
                 Find reliable, current social service resources and share real-time updates with your network. Never
                 waste time on outdated information again.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="gap-2" asChild>
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+                <Button size="lg" className="gap-2 w-full sm:w-auto" asChild>
                   <Link href="/app">
                     Get Started <ArrowRight className="h-4 w-4" />
                   </Link>
@@ -203,13 +203,13 @@ export default function LandingPage() {
                 </Button>
               </div>
             </div>
-            <div className="relative w-[700px] h-[350px] rounded-lg overflow-hidden mx-auto">
+            <div className="relative w-full max-w-[700px] h-auto rounded-lg overflow-hidden mx-auto mt-8 lg:mt-0">
               <Image
                 src="/landing-image.png"
                 alt="Dashboard Preview"
                 width={700}
                 height={350}
-                className="object-cover"
+                className="object-cover w-full h-auto"
                 priority
               />
             </div>
