@@ -3,7 +3,7 @@
 import { useState, FormEvent, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Clock, MapPin, FolderKanban, Clipboard, Smartphone, CheckCircle, Menu, X } from "lucide-react"
+import { ArrowRight, Clock, MapPin, FolderKanban, Clipboard, Smartphone, CheckCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
@@ -14,7 +14,6 @@ import { Label } from "@/components/ui/label"
 import { useAuth } from "./context/AuthContext"
 
 export default function LandingPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [loginForm, setLoginForm] = useState({ username: "", password: "" })
   const [registerForm, setRegisterForm] = useState({ 
     fullName: "", 
@@ -127,56 +126,6 @@ export default function LandingPage() {
             </Button>
           </nav>
 
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileMenuOpen(true)}>
-            <Menu className="h-6 w-6" />
-            <span className="sr-only">Open menu</span>
-          </Button>
-
-          {mobileMenuOpen && (
-            <div className="fixed inset-0 z-50 bg-background md:hidden">
-              <div className="container flex h-16 items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Image
-                    src="/casesync-logo.png"
-                    alt="CaseSync Logo"
-                    width={100}
-                    height={24}
-                    priority
-                  />
-                </div>
-                <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(false)}>
-                  <X className="h-6 w-6" />
-                  <span className="sr-only">Close menu</span>
-                </Button>
-              </div>
-              <nav className="container grid gap-6 py-6">
-                <Link
-                  href="#features"
-                  className="text-lg font-medium hover:text-primary"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Features
-                </Link>
-                <Link
-                  href="#how-it-works"
-                  className="text-lg font-medium hover:text-primary"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  How it Works
-                </Link>
-                <Link
-                  href="#login"
-                  className="text-lg font-medium hover:text-primary"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Login
-                </Link>
-                <Button className="w-full" onClick={() => setMobileMenuOpen(false)} asChild>
-                  <Link href="/app">Get Started</Link>
-                </Button>
-              </nav>
-            </div>
-          )}
         </div>
       </header>
 
