@@ -482,7 +482,7 @@ export default function ResourceDetailPage({ params }: { params: { id: string } 
                   ? currentContactDetails.description.split('\n').map((line, i) => (
                       <React.Fragment key={i}>
                         {line}
-                        {i < currentContactDetails.description.split('\n').length - 1 && <br />}
+                        {i < (currentContactDetails.description?.split('\n').length || 0) - 1 && <br />}
                       </React.Fragment>
                     ))
                   : 'No description available.'}
