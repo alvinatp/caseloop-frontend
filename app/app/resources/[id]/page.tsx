@@ -372,8 +372,12 @@ export default function ResourceDetailPage({ params }: { params: { id: string } 
             <CardHeader className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <CardTitle className="text-2xl font-bold text-[#333333]">{resource.name}</CardTitle>
-                  <CardDescription className="text-[#666666]">{resource.category}</CardDescription>
+                  <CardTitle className="text-2xl font-bold text-[#333333]">
+                    {resource.program || resource.organization}
+                  </CardTitle>
+                  <CardDescription className="text-[#666666]">
+                    {resource.program ? `${resource.organization} • ${resource.category}` : resource.category}
+                  </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
                   <Dialog open={isEditingDialog} onOpenChange={setIsEditingDialog}>
@@ -400,6 +404,22 @@ export default function ResourceDetailPage({ params }: { params: { id: string } 
                         </div>
                       )}
                       <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <Label>Organization</Label>
+                          <Input
+                            value={resource.organization}
+                            disabled
+                            className="bg-gray-50"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Program</Label>
+                          <Input
+                            value={resource.program || ""}
+                            disabled
+                            className="bg-gray-50"
+                          />
+                        </div>
                         <div className="space-y-2">
                           <Label>Description</Label>
                           <Textarea

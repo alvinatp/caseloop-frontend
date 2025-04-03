@@ -80,7 +80,7 @@ export async function updateResource(
 export async function searchResources(
   query: string,
   page: number = 1,
-  limit: number = 10
+  limit: number = 9
 ): Promise<ApiResponse<ResourcesResponse>> {
   const params = new URLSearchParams({
     query,

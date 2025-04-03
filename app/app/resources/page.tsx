@@ -25,7 +25,8 @@ const ZIPCODE_REGEX = /^\d{5}(-\d{4})?$/
 // Define the Resource interface
 interface Resource {
   id: number;
-  name: string;
+  organization: string;
+  program?: string;
   category: string;
   status: "AVAILABLE" | "LIMITED" | "UNAVAILABLE";
   contactDetails: {
@@ -54,13 +55,15 @@ export default function ResourcesPage() {
   const [error, setError] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [totalResources, setTotalResources] = useState(0)
 
   // New Resource creation state
   const { toast } = useToast()
   const [isAddResourceOpen, setIsAddResourceOpen] = useState(false)
   const [creatingResource, setCreatingResource] = useState(false)
   const [newResource, setNewResource] = useState({
-    name: "",
+    organization: "",
+    program: "",
     category: "",
     zipcode: "",
     address: "",
@@ -68,7 +71,7 @@ export default function ResourcesPage() {
     email: "",
     website: "",
     description: "",
-    status: "AVAILABLE"
+    status: "AVAILABLE" as "AVAILABLE" | "LIMITED" | "UNAVAILABLE"
   })
   const [createSuccess, setCreateSuccess] = useState("")
   const [createError, setCreateError] = useState("")
@@ -128,6 +131,7 @@ export default function ResourcesPage() {
       if (data && data.resources) {
         setResources(data.resources)
         setTotalPages(data.totalPages || 1)
+        setTotalResources(data.totalResources || 0)
       } else {
         console.error("Unexpected API response format:", data)
         setError("Received invalid data format from server")
@@ -150,7 +154,8 @@ export default function ResourcesPage() {
   const filteredResources = resources.filter((resource) => {
     // Search in name and contact details
     const searchableText = [
-      resource.name,
+      resource.organization,
+      resource.program,
       resource.category,
       resource.contactDetails?.address,
       resource.contactDetails?.phone,
@@ -194,9 +199,10 @@ export default function ResourcesPage() {
     try {
       // Prepare resource payload according to API expectations
       const resourcePayload = {
-        name: newResource.name,
+        organization: newResource.organization,
+        program: newResource.program || undefined,
         category: newResource.category,
-        status: newResource.status as "AVAILABLE" | "LIMITED" | "UNAVAILABLE",
+        status: newResource.status,
         contactDetails: {
           address: newResource.address,
           phone: newResource.phone,
@@ -210,7 +216,8 @@ export default function ResourcesPage() {
       await createResource(resourcePayload)
       setIsAddResourceOpen(false)
       setNewResource({
-        name: "",
+        organization: "",
+        program: "",
         category: "",
         zipcode: "",
         address: "",
@@ -271,17 +278,30 @@ export default function ResourcesPage() {
               <form onSubmit={handleCreateResource}>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="name" className="text-right">
-                      Name *
+                    <Label htmlFor="organization" className="text-right">
+                      Organization *
                     </Label>
                     <Input
-                      id="name"
-                      name="name"
-                      value={newResource.name}
+                      id="organization"
+                      name="organization"
+                      value={newResource.organization}
                       onChange={handleInputChange}
-                      placeholder="Resource name"
+                      placeholder="Organization name"
                       className="col-span-3"
                       required
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="program" className="text-right">
+                      Program
+                    </Label>
+                    <Input
+                      id="program"
+                      name="program"
+                      value={newResource.program}
+                      onChange={handleInputChange}
+                      placeholder="Program name"
+                      className="col-span-3"
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
@@ -529,7 +549,7 @@ export default function ResourcesPage() {
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <p className="text-sm text-[#666666]">{filteredResources.length} resources found</p>
+          <p className="text-sm text-[#666666]">{totalResources} resources found</p>
         </div>
       </div>
 
@@ -560,6 +580,64 @@ export default function ResourcesPage() {
           <ResourceCard key={resource.id} resource={resource} />
         ))}
       </div>
+
+      {/* Pagination */}
+      {!loading && totalPages > 1 && (
+        <div className="flex justify-center items-center mt-8 gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="h-10 px-4 py-2"
+          >
+            Previous
+          </Button>
+          
+          <div className="flex items-center gap-1">
+            {[...Array(totalPages)].map((_, i) => {
+              const pageNum = i + 1;
+              const isWithinRange = pageNum === 1 || 
+                                    pageNum === totalPages || 
+                                    (pageNum >= currentPage - 1 && pageNum <= currentPage + 1);
+              
+              // Show page numbers or ellipsis
+              if (isWithinRange) {
+                return (
+                  <Button
+                    key={pageNum}
+                    variant={currentPage === pageNum ? "default" : "outline"}
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`h-10 w-10 ${
+                      currentPage === pageNum 
+                      ? 'bg-[#007BFF] hover:bg-[#0056D2] text-white' 
+                      : 'text-[#555555]'
+                    }`}
+                  >
+                    {pageNum}
+                  </Button>
+                );
+              } else if (
+                // Show ellipsis if there's a gap
+                (pageNum === 2 && currentPage > 3) ||
+                (pageNum === totalPages - 1 && currentPage < totalPages - 2)
+              ) {
+                return <span key={pageNum} className="mx-1">...</span>;
+              }
+              
+              return null;
+            })}
+          </div>
+          
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="h-10 px-4 py-2"
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </div>
   )
 }
@@ -574,7 +652,8 @@ function ResourceCard({ resource }: ResourceCardProps) {
   const [isSaved, setIsSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [editableDetails, setEditableDetails] = useState({
-    name: resource.name,
+    organization: resource.organization,
+    program: resource.program,
     category: resource.category,
     status: resource.status,
     contactDetails: {
@@ -689,8 +768,12 @@ function ResourceCard({ resource }: ResourceCardProps) {
       <CardHeader className="p-4">
         <div className="flex justify-between items-start gap-4">
           <div className="min-w-0 flex-1">
-            <CardTitle className="text-lg font-bold text-[#333333] truncate">{resource.name}</CardTitle>
-            <CardDescription className="text-sm text-[#666666] truncate">{resource.category}</CardDescription>
+            <CardTitle className="text-lg font-bold text-[#333333] truncate">
+              {resource.program || resource.organization}
+            </CardTitle>
+            <CardDescription className="text-sm text-[#666666] truncate">
+              {resource.program ? `${resource.organization} • ${resource.category}` : resource.category}
+            </CardDescription>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             <span className={`text-xs px-2 py-1 rounded-full font-medium whitespace-nowrap ${statusColors[normalizedStatus]}`}>
