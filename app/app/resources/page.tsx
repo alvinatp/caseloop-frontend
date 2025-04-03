@@ -769,10 +769,10 @@ function ResourceCard({ resource }: ResourceCardProps) {
         <div className="flex justify-between items-start gap-4">
           <div className="min-w-0 flex-1">
             <CardTitle className="text-lg font-bold text-[#333333] truncate">
-              {resource.program || resource.organization}
+              {resource.organization}
             </CardTitle>
             <CardDescription className="text-sm text-[#666666] truncate">
-              {resource.program ? `${resource.organization} • ${resource.category}` : resource.category}
+              {resource.program ? `${resource.program} • ${resource.category}` : resource.category}
             </CardDescription>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">

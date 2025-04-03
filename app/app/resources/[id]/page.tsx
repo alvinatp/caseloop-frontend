@@ -373,10 +373,10 @@ export default function ResourceDetailPage({ params }: { params: { id: string } 
               <div className="flex justify-between items-start">
                 <div>
                   <CardTitle className="text-2xl font-bold text-[#333333]">
-                    {resource.program || resource.organization}
+                    {resource.organization}
                   </CardTitle>
                   <CardDescription className="text-[#666666]">
-                    {resource.program ? `${resource.organization} • ${resource.category}` : resource.category}
+                    {resource.program ? `${resource.program} • ${resource.category}` : resource.category}
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">

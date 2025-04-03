@@ -367,10 +367,10 @@ function ResourceCard({ resource, onSaveToggle }: ResourceCardProps) {
         <div className="flex justify-between items-start">
           <div className="min-w-0 flex-1">
             <CardTitle className="text-base font-bold text-[#333333] truncate">
-              {resource.program || resource.organization}
+              {resource.organization}
             </CardTitle>
             <CardDescription className="text-xs text-[#666666] truncate">
-              {resource.program ? `${resource.organization} • ${resource.category}` : resource.category}
+              {resource.program ? `${resource.program} • ${resource.category}` : resource.category}
             </CardDescription>
           </div>
           <Button
