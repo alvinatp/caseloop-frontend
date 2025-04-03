@@ -59,7 +59,7 @@ export default function SettingsPage() {
                 <Button className="w-full justify-start" variant="outline" asChild>
                   <Link href="/app/settings/scraper">
                     <FileText className="w-4 h-4 mr-2" />
-                    Resource Scraper
+                    Resource Import Tool
                   </Link>
                 </Button>
               </div>

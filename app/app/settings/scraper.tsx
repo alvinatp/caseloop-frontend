@@ -11,7 +11,7 @@ import { Loader2, FileUp, File } from "lucide-react"
 import { useAuth } from "../../context/AuthContext"
 import axios from "axios"
 
-export default function ImportPage() {
+export default function ScraperPage() {
   const { user } = useAuth()
   const router = useRouter()
   
@@ -87,7 +87,7 @@ export default function ImportPage() {
   
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Resource Import</h1>
+      <h1 className="text-2xl font-bold mb-6">Resource Import Tool</h1>
       
       <Card>
         <CardHeader>
