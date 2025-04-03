@@ -851,12 +851,22 @@ function ResourceCard({ resource }: ResourceCardProps) {
 
 // Categories for filtering
 const categories = [
-  "housing",
-  "food",
-  "healthcare",
-  "employment",
-  "legal",
-  "transportation",
-  "childcare",
-  "substance-abuse"
+  "Housing",
+  "Food",
+  "Healthcare",
+  "Employment",
+  "Legal",
+  "Transportation",
+  "Childcare",
+  "Substance-Abuse",
+  "Mental Health",
+  "Education",
+  "Financial Assistance",
+  "Senior Services",
+  "Veterans Services",
+  "Clothing",
+  "Domestic Violence",
+  "Crisis Support",
+  "Disability Services",
+  "LGBTQ+ Services"
 ]
