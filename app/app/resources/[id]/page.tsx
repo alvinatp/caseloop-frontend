@@ -5,6 +5,7 @@ import { use } from "react"
 import Link from "next/link"
 import { ArrowLeft, Clock, Edit, MapPin, Phone, Save, Star, Globe, Info, CalendarDays, List } from "lucide-react"
 import { format, parseISO } from 'date-fns'
+import React from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -476,7 +477,16 @@ export default function ResourceDetailPage({ params }: { params: { id: string } 
                   {statusText[resource.status]}
                 </span>
               </div>
-              <p className="text-[#555555] mb-4">{currentContactDetails.description || 'No description available.'}</p>
+              <p className="text-[#555555] mb-4">
+                {currentContactDetails.description 
+                  ? currentContactDetails.description.split('\n').map((line, i) => (
+                      <React.Fragment key={i}>
+                        {line}
+                        {i < currentContactDetails.description.split('\n').length - 1 && <br />}
+                      </React.Fragment>
+                    ))
+                  : 'No description available.'}
+              </p>
               <div className="grid gap-3 mt-4 text-sm">
                 {currentContactDetails.address && (
                   <div className="flex items-center gap-2">
