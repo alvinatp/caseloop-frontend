@@ -249,7 +249,7 @@ export default function ResourcesPage() {
   const isAdmin = user?.role?.toUpperCase() === 'ADMIN'
 
   return (
-    <div className="p-6">
+    <div className="p-0">
       <div className="flex justify-between items-center mb-8">
         <div className="flex flex-col gap-4">
           <h1 className="text-2xl font-bold tracking-tight text-[#333333]">Find Resources</h1>

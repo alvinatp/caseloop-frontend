@@ -304,7 +304,7 @@ export default function ResourceDetailPage({ params }: { params: { id: string } 
 
   if (loading) {
     return (
-      <div className="p-6">
+      <div className="p-0">
         <div className="flex flex-col items-center justify-center py-12">
           <p className="text-[#555555]">Loading resource details...</p>
         </div>
@@ -314,7 +314,7 @@ export default function ResourceDetailPage({ params }: { params: { id: string } 
 
   if (error || !resource) {
     return (
-      <div className="p-6">
+      <div className="p-0">
         <div className="flex flex-col items-center justify-center py-12">
           <h1 className="text-2xl font-bold text-[#333333]">Resource not found</h1>
           <p className="text-[#555555] mt-2">The resource you're looking for doesn't exist or has been removed.</p>
@@ -342,7 +342,7 @@ export default function ResourceDetailPage({ params }: { params: { id: string } 
   const currentNotes = Array.isArray(resource.notes) ? resource.notes : [];
 
   return (
-    <div className="p-6">
+    <div className="p-0">
       {/* Back Button */}
       <div className="mb-6">
         <Button variant="ghost" asChild>

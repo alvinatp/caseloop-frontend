@@ -111,7 +111,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-0">
       <div className="flex flex-col gap-4 mb-8">
         <h1 className="text-2xl font-bold tracking-tight text-[#333333]">
           Welcome back, {user?.fullName || user?.username || 'Case Manager'}
@@ -126,12 +126,21 @@ export default function Dashboard() {
         <div className="max-w-3xl w-full">
           <div className="bg-white rounded-full shadow-lg border border-gray-200 flex items-center p-1 pr-2 transition-all hover:shadow-xl focus-within:shadow-xl focus-within:border-blue-100">
             <div className="flex-1 flex items-center pl-6 pr-4 py-2" style={{ paddingLeft: '12px' }}>
-              <Search className="h-5 w-5 text-[#007BFF] mr-10 flex-shrink-0" />
+              <Search className="h-5 w-5 text-[#007BFF] mr-3 flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Search resources by name, category, or zipcode"
-                className="w-full border-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none text-gray-800 placeholder:text-gray-500 h-auto"
-                style={{ paddingLeft: '12px' }}
+                className="w-full border-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none text-gray-800 placeholder:text-gray-500 h-auto hidden md:block"
+                style={{ paddingLeft: '4px' }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={handleKeyPress}
+              />
+              <input
+                type="text"
+                placeholder="Search resources..."
+                className="w-full border-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none text-gray-800 placeholder:text-gray-500 h-auto md:hidden"
+                style={{ paddingLeft: '4px' }}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleKeyPress}

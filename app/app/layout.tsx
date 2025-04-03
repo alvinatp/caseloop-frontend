@@ -41,7 +41,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     <ProtectedRoute>
       <div className="min-h-screen flex flex-col">
         {/* Top Bar */}
-        <header className="h-[60px] bg-white border-b shadow-sm flex items-center px-4 w-full">
+        <header className="h-[60px] bg-white border-b shadow-sm flex items-center px-6 w-full">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center md:hidden">
               <Sheet>
@@ -63,11 +63,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
                           priority
                         />
                       </Link>
-                      <SheetTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <X className="h-5 w-5" />
-                        </Button>
-                      </SheetTrigger>
                     </div>
                     <nav className="flex-1 px-2 space-y-2">
                       <Link
@@ -91,14 +86,24 @@ export default function AppLayout({ children }: AppLayoutProps) {
                         <Settings className="h-6 w-6" />
                         <span className="font-medium">Settings</span>
                       </Link>
+                      
+                      {isAdmin && (
+                        <Link
+                          href="/app/settings/manage-resources"
+                          className="flex items-center gap-3 px-3 py-2 rounded-md text-[#333333] hover:bg-blue-50 hover:text-[#007BFF]"
+                        >
+                          <Database className="h-6 w-6" />
+                          <span className="font-medium">Manage Resources</span>
+                        </Link>
+                      )}
                     </nav>
                   </div>
                 </SheetContent>
               </Sheet>
             </div>
-            <div className="flex-1 flex items-center">
+            <div className="flex-1 flex items-center justify-center">
               <div className="hidden md:block w-6"></div>
-              <Link href="/app" className="ml-4">
+              <Link href="/app" className="hidden md:block">
                 <Image 
                   src="/casesync-logo.png" 
                   alt="CaseSync Logo" 
@@ -158,6 +163,16 @@ export default function AppLayout({ children }: AppLayoutProps) {
                   <Settings className="h-6 w-6" />
                   <span className="font-medium">Settings</span>
                 </Link>
+                
+                {isAdmin && (
+                  <Link
+                    href="/app/settings/manage-resources"
+                    className="flex items-center gap-3 px-3 py-2 rounded-md text-[#333333] hover:bg-blue-50 hover:text-[#007BFF]"
+                  >
+                    <Database className="h-6 w-6" />
+                    <span className="font-medium">Manage Resources</span>
+                  </Link>
+                )}
               </nav>
             </div>
           </div>
