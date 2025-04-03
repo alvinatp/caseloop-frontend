@@ -62,7 +62,7 @@ export default function ProfileSettings() {
   }
   
   return (
-    <div className="p-6 max-w-xl mx-auto">
+    <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Profile Settings</h1>
       
       {error && (

@@ -106,14 +106,17 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 </SheetContent>
               </Sheet>
             </div>
-            <div className="flex-1 flex justify-center">
-              <Image 
-                src="/casesync-logo.png" 
-                alt="CaseSync Logo" 
-                width={110} 
-                height={28} 
-                priority
-              />
+            <div className="flex-1 flex items-center">
+              <div className="hidden md:block w-6"></div>
+              <Link href="/app" className="ml-4">
+                <Image 
+                  src="/casesync-logo.png" 
+                  alt="CaseSync Logo" 
+                  width={110} 
+                  height={28} 
+                  priority
+                />
+              </Link>
             </div>
             <div className="flex items-center gap-2">
               <Button variant="ghost" size="icon">

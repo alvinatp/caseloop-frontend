@@ -4,14 +4,14 @@ import { useAuth } from "../../context/AuthContext"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Database, UserCog, FileImport } from "lucide-react"
+import { Database, UserCog, FileText } from "lucide-react"
 
 export default function SettingsPage() {
   const { user } = useAuth()
   const isAdmin = user?.role === "ADMIN"
   
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Settings</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -65,7 +65,7 @@ export default function SettingsPage() {
                 
                 <Button className="w-full justify-start" variant="outline" asChild>
                   <Link href="/app/settings/scraper">
-                    <FileImport className="w-4 h-4 mr-2" />
+                    <FileText className="w-4 h-4 mr-2" />
                     Resource Scraper
                   </Link>
                 </Button>
