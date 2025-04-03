@@ -203,9 +203,9 @@ export default function LandingPage() {
                 </Button>
               </div>
             </div>
-            <div className="relative h-[350px] lg:h-[500px] rounded-lg overflow-hidden">
+            <div className="relative h-[350px] lg:h-[700px] rounded-lg overflow-hidden">
               <Image
-                src="/placeholder.svg?height=500&width=600"
+                src="/landing-image.png"
                 alt="Dashboard Preview"
                 fill
                 className="object-cover"
