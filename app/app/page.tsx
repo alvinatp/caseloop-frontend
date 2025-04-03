@@ -19,19 +19,24 @@ export default function Dashboard() {
   const [savedResources, setSavedResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("recent");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalResources, setTotalResources] = useState(0);
   const { user } = useAuth();
   const router = useRouter();
 
   // Fetch recent resources
-  const fetchRecentResources = async () => {
+  const fetchRecentResources = async (page: number = 1) => {
     try {
       setLoading(true);
       // Get resources updated in the last 7 days
       const oneWeekAgo = new Date();
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
       
-      const recentUpdates = await resourceService.getRecentUpdates(oneWeekAgo.toISOString());
-      setRecentResources(recentUpdates);
+      const data = await resourceService.getRecentUpdates(oneWeekAgo.toISOString(), page);
+      setRecentResources(data.resources);
+      setTotalPages(data.totalPages);
+      setTotalResources(data.totalResources);
     } catch (error) {
       console.error("Failed to fetch recent resources:", error);
     } finally {
@@ -52,10 +57,18 @@ export default function Dashboard() {
     }
   };
 
+  // Handle pagination
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    if (activeTab === "recent") {
+      fetchRecentResources(newPage);
+    }
+  };
+
   // Initial fetch
   useEffect(() => {
     if (activeTab === "recent") {
-      fetchRecentResources();
+      fetchRecentResources(currentPage);
     } else {
       fetchSavedResources();
     }
@@ -91,7 +104,7 @@ export default function Dashboard() {
 
     // Refresh the appropriate list based on the current tab
     if (activeTab === "recent") {
-      fetchRecentResources();
+      fetchRecentResources(currentPage);
     } else {
       fetchSavedResources();
     }
@@ -147,12 +160,14 @@ export default function Dashboard() {
             className="text-[#555555] data-[state=active]:text-[#007BFF] data-[state=active]:border-b-2 data-[state=active]:border-[#007BFF]"
           >
             Recently Updated
+            {totalResources > 0 && activeTab === "recent" && <span className="ml-2 text-xs bg-gray-100 text-gray-700 rounded-full px-2 py-0.5">{totalResources}</span>}
           </TabsTrigger>
           <TabsTrigger
             value="saved"
             className="text-[#555555] data-[state=active]:text-[#007BFF] data-[state=active]:border-b-2 data-[state=active]:border-[#007BFF]"
           >
             Saved Resources
+            {savedResources.length > 0 && activeTab === "saved" && <span className="ml-2 text-xs bg-gray-100 text-gray-700 rounded-full px-2 py-0.5">{savedResources.length}</span>}
           </TabsTrigger>
         </TabsList>
 
@@ -177,6 +192,63 @@ export default function Dashboard() {
                   </div>
                 ))}
               </div>
+              {/* Add pagination controls */}
+              {!loading && activeTab === "recent" && totalPages > 1 && (
+                <div className="flex justify-center items-center mt-6 gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="h-9 px-3 py-2 text-sm"
+                  >
+                    Previous
+                  </Button>
+                  
+                  <div className="flex items-center gap-1">
+                    {[...Array(totalPages)].map((_, i) => {
+                      const pageNum = i + 1;
+                      const isWithinRange = pageNum === 1 || 
+                                          pageNum === totalPages || 
+                                          (pageNum >= currentPage - 1 && pageNum <= currentPage + 1);
+                      
+                      // Show page numbers or ellipsis
+                      if (isWithinRange) {
+                        return (
+                          <Button
+                            key={pageNum}
+                            variant={currentPage === pageNum ? "default" : "outline"}
+                            onClick={() => handlePageChange(pageNum)}
+                            className={`h-9 w-9 text-sm ${
+                              currentPage === pageNum 
+                              ? 'bg-[#007BFF] hover:bg-[#0056D2] text-white' 
+                              : 'text-[#555555]'
+                            }`}
+                          >
+                            {pageNum}
+                          </Button>
+                        );
+                      } else if (
+                        // Show ellipsis if there's a gap
+                        (pageNum === 2 && currentPage > 3) ||
+                        (pageNum === totalPages - 1 && currentPage < totalPages - 2)
+                      ) {
+                        return <span key={pageNum} className="mx-1">...</span>;
+                      }
+                      
+                      return null;
+                    })}
+                  </div>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="h-9 px-3 py-2 text-sm"
+                  >
+                    Next
+                  </Button>
+                </div>
+              )}
               <div className="mt-8 text-center">
                 <Button variant="outline" className="border-[#007BFF] text-[#007BFF] hover:bg-blue-50" asChild>
                   <Link href="/app/resources">
@@ -222,118 +294,114 @@ interface ResourceCardProps {
 }
 
 function ResourceCard({ resource, onSaveToggle }: ResourceCardProps) {
-  const [isSaved, setIsSaved] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const router = useRouter();
+  const [isSaved, setIsSaved] = useState(false);
 
-  // Check if resource is saved on mount
   useEffect(() => {
     const checkSavedStatus = async () => {
       try {
         const savedResources = await resourceService.getSavedResources();
-        setIsSaved(savedResources.some(r => r.id === resource.id));
+        const saved = savedResources.some(r => r.id === resource.id);
+        setIsSaved(saved);
       } catch (err) {
         console.error('Error checking saved status:', err);
       }
     };
+    
     checkSavedStatus();
   }, [resource.id]);
 
   const handleSaveToggle = async (e: React.MouseEvent) => {
-    // Prevent the click from navigating to the resource detail page
-    e.preventDefault();
     e.stopPropagation();
     
     try {
-      setIsSaving(true);
       if (isSaved) {
         await resourceService.unsaveResource(resource.id);
-        setIsSaved(false);
-        // Notify parent component
-        if (onSaveToggle) {
-          onSaveToggle(resource.id, false);
-        }
       } else {
         await resourceService.saveResource(resource.id);
-        setIsSaved(true);
-        // Notify parent component
-        if (onSaveToggle) {
-          onSaveToggle(resource.id, true);
-        }
       }
-    } catch (err: any) {
+      
+      setIsSaved(!isSaved);
+      if (onSaveToggle) {
+        onSaveToggle(resource.id, !isSaved);
+      }
+    } catch (err) {
       console.error('Error toggling save:', err);
-      setError(err.response?.data?.message || 'Failed to update save status');
-    } finally {
-      setIsSaving(false);
     }
   };
-  
+
   const handleCardClick = () => {
-    router.push(`/app/resources/${resource.id}`);
+    window.location.href = `/app/resources/${resource.id}`;
   };
 
+  // Convert status to readable format
   const statusColors = {
     AVAILABLE: "text-[#28A745] bg-[#28A74510]",
     LIMITED: "text-[#FFC107] bg-[#FFC10710]",
-    UNAVAILABLE: "text-[#DC3545] bg-[#DC354510]",
-  }
+    UNAVAILABLE: "text-[#DC3545] bg-[#DC354510]"
+  };
 
   const statusText = {
     AVAILABLE: "Available",
     LIMITED: "Limited",
-    UNAVAILABLE: "Unavailable",
-  }
+    UNAVAILABLE: "Unavailable"
+  };
 
-  // Format the lastUpdated date in a human-readable format
   const formatDate = (dateString: string) => {
-    if (!dateString) return "Unknown";
-    
     try {
-      if (dateString.includes('ago') || dateString.includes('day') || dateString.includes('hour')) {
-        return dateString;
-      }
-      
       const date = new Date(dateString);
-      if (isNaN(date.getTime())) return dateString;
-      
-      return new Intl.DateTimeFormat('en-US').format(date);
+      return new Intl.DateTimeFormat('en-US', { 
+        month: 'short', 
+        day: 'numeric' 
+      }).format(date);
     } catch (e) {
       return dateString;
     }
-  }
+  };
 
   return (
     <Card 
-      className="h-full border border-[#E0E0E0] shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col cursor-pointer"
+      className="h-full border border-[#E0E0E0] shadow-sm cursor-pointer hover:border-[#007BFF] transition-colors"
       onClick={handleCardClick}
     >
-      <CardHeader className="p-3 pb-1">
+      <CardHeader className="p-4 pb-2">
         <div className="flex justify-between items-start">
-          <CardTitle className="text-base font-bold text-[#333333] line-clamp-2">{resource.name}</CardTitle>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="h-6 w-6 p-0 ml-1 flex-shrink-0"
+          <div className="min-w-0 flex-1">
+            <CardTitle className="text-base font-bold text-[#333333] truncate">
+              {resource.program || resource.organization}
+            </CardTitle>
+            <CardDescription className="text-xs text-[#666666] truncate">
+              {resource.program ? `${resource.organization} • ${resource.category}` : resource.category}
+            </CardDescription>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 -mt-1 -mr-2"
             onClick={handleSaveToggle}
-            disabled={isSaving}
-            aria-label={isSaved ? 'Unsave resource' : 'Save resource'}
           >
-            <Star className={`h-4 w-4 ${isSaved ? 'text-[#FFC107] fill-current' : 'text-[#CCCCCC]'} hover:text-[#FFC107]`} />
+            <Star
+              className={`h-4 w-4 ${
+                isSaved ? "text-[#FFC107] fill-current" : "text-[#CCCCCC]"
+              } hover:text-[#FFC107]`}
+            />
+            <span className="sr-only">{isSaved ? "Unsave" : "Save"} resource</span>
           </Button>
         </div>
-        <CardDescription className="text-sm text-[#666666] mt-1">{resource.category}</CardDescription>
       </CardHeader>
-      <CardContent className="p-3 pt-1 pb-3 flex-grow flex flex-col justify-between">
-        <div className="flex items-center gap-2 mb-2">
+      <CardContent className="p-4 pt-1">
+        <div className="flex items-center mb-3">
           <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColors[resource.status]}`}>
             {statusText[resource.status]}
           </span>
+          <span className="text-xs text-[#999999] ml-auto">
+            Updated {formatDate(resource.lastUpdated)}
+          </span>
         </div>
-        <p className="text-xs text-[#999999]">Updated {formatDate(resource.lastUpdated)}</p>
+        <p className="text-sm text-[#555555] line-clamp-2">
+          {resource.contactDetails?.description || "No description available"}
+        </p>
       </CardContent>
     </Card>
-  )
+  );
 }
 

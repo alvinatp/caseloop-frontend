@@ -6,7 +6,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 // Type definitions
 export interface Resource {
   id: number;
-  name: string;
+  organization: string;
+  program?: string;
   category: string;
   status: 'AVAILABLE' | 'LIMITED' | 'UNAVAILABLE';
   contactDetails: {
@@ -112,10 +113,20 @@ export const searchResources = async (query: string, params?: { page?: number; c
 };
 
 // Get recent updates
-export const getRecentUpdates = async (since?: string): Promise<Resource[]> => {
+export const getRecentUpdates = async (since: string, page: number = 1, limit: number = 15): Promise<{
+  resources: Resource[];
+  currentPage: number;
+  totalPages: number;
+  totalResources: number;
+}> => {
   try {
-    const response = await axios.get<Resource[]>(`${API_URL}/resources/updates`, {
-      params: { since },
+    const response = await axios.get<{
+      resources: Resource[];
+      currentPage: number;
+      totalPages: number;
+      totalResources: number;
+    }>(`${API_URL}/resources/updates`, {
+      params: { since, page, limit },
     });
     return response.data;
   } catch (error) {
@@ -171,7 +182,8 @@ export const getSavedResources = async (): Promise<Resource[]> => {
 
 // Create a new resource
 export const createResource = async (data: {
-  name: string;
+  organization: string;
+  program?: string;
   category: string;
   status: Resource['status'];
   contactDetails: Resource['contactDetails'];
