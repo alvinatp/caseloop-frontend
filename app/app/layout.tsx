@@ -41,89 +41,91 @@ export default function AppLayout({ children }: AppLayoutProps) {
     <ProtectedRoute>
       <div className="min-h-screen flex flex-col">
         {/* Top Bar */}
-        <header className="h-[60px] bg-white border-b shadow-sm flex items-center px-3 sm:px-4 md:px-6 w-full">
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center md:hidden">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-9 w-9">
-                    <Menu className="h-5 w-5" />
-                    <span className="sr-only">Toggle menu</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="left" className="w-[250px] bg-[#F5F5F5] p-0">
-                  <div className="flex flex-col h-full py-4">
-                    <div className="px-4 mb-6 flex items-center justify-between">
-                      <Link href="/app" className="flex-grow flex justify-center">
-                        <Image 
-                          src="/casesync-logo.png" 
-                          alt="CaseSync Logo" 
-                          width={120} 
-                          height={28} 
-                          priority
-                        />
-                      </Link>
+        <div className="w-full bg-white border-b shadow-sm">
+          <header className="h-[60px] flex items-center px-3 sm:px-4 md:px-6 mx-auto w-full max-w-screen-2xl">
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center md:hidden">
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-9 w-9">
+                      <Menu className="h-5 w-5" />
+                      <span className="sr-only">Toggle menu</span>
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="left" className="w-[250px] bg-[#F5F5F5] p-0">
+                    <div className="flex flex-col h-full py-4">
+                      <div className="px-4 mb-6 flex items-center justify-between">
+                        <Link href="/app" className="flex-grow flex justify-center">
+                          <Image 
+                            src="/casesync-logo.png" 
+                            alt="CaseSync Logo" 
+                            width={120} 
+                            height={28} 
+                            priority
+                          />
+                        </Link>
+                      </div>
+                      <nav className="flex-1 px-2 space-y-2">
+                        <Link
+                          href="/app"
+                          className="flex items-center gap-3 px-3 py-2 rounded-md text-[#333333] hover:bg-blue-50 hover:text-[#007BFF]"
+                        >
+                          <Home className="h-6 w-6" />
+                          <span className="font-medium">Home</span>
+                        </Link>
+                        <Link
+                          href="/app/resources"
+                          className="flex items-center gap-3 px-3 py-2 rounded-md text-[#333333] hover:bg-blue-50 hover:text-[#007BFF]"
+                        >
+                          <Search className="h-6 w-6" />
+                          <span className="font-medium">Resources</span>
+                        </Link>
+                        <Link
+                          href="/app/settings"
+                          className="flex items-center gap-3 px-3 py-2 rounded-md text-[#333333] hover:bg-blue-50 hover:text-[#007BFF]"
+                        >
+                          <Settings className="h-6 w-6" />
+                          <span className="font-medium">Settings</span>
+                        </Link>
+                      </nav>
                     </div>
-                    <nav className="flex-1 px-2 space-y-2">
-                      <Link
-                        href="/app"
-                        className="flex items-center gap-3 px-3 py-2 rounded-md text-[#333333] hover:bg-blue-50 hover:text-[#007BFF]"
-                      >
-                        <Home className="h-6 w-6" />
-                        <span className="font-medium">Home</span>
-                      </Link>
-                      <Link
-                        href="/app/resources"
-                        className="flex items-center gap-3 px-3 py-2 rounded-md text-[#333333] hover:bg-blue-50 hover:text-[#007BFF]"
-                      >
-                        <Search className="h-6 w-6" />
-                        <span className="font-medium">Resources</span>
-                      </Link>
-                      <Link
-                        href="/app/settings"
-                        className="flex items-center gap-3 px-3 py-2 rounded-md text-[#333333] hover:bg-blue-50 hover:text-[#007BFF]"
-                      >
-                        <Settings className="h-6 w-6" />
-                        <span className="font-medium">Settings</span>
-                      </Link>
-                    </nav>
-                  </div>
-                </SheetContent>
-              </Sheet>
-            </div>
-            <div className="flex-1 flex items-center">
-              <Link href="/app" className="hidden md:block">
-                <Image 
-                  src="/casesync-logo.png" 
-                  alt="CaseSync Logo" 
-                  width={110} 
-                  height={28} 
-                  priority
-                />
-              </Link>
-            </div>
-            <div className="flex items-center gap-1 sm:gap-2">
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <Bell className="h-5 w-5" />
-                <span className="sr-only">Notifications</span>
-              </Button>
-              <div className="flex items-center gap-1 sm:gap-2">
-                <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
-                  <AvatarImage src="" alt="User" />
-                  <AvatarFallback>{getInitials()}</AvatarFallback>
-                </Avatar>
-                <div className="hidden md:block text-sm">
-                  <div className="font-medium">{user?.fullName || user?.username}</div>
-                  <div className="text-xs text-muted-foreground">{user?.role}</div>
-                </div>
+                  </SheetContent>
+                </Sheet>
               </div>
-              <Button variant="ghost" size="icon" onClick={handleLogout} className="h-9 w-9">
-                <LogOut className="h-5 w-5" />
-                <span className="sr-only">Log out</span>
-              </Button>
+              <div className="flex-1 flex items-center">
+                <Link href="/app" className="hidden md:block">
+                  <Image 
+                    src="/casesync-logo.png" 
+                    alt="CaseSync Logo" 
+                    width={110} 
+                    height={28} 
+                    priority
+                  />
+                </Link>
+              </div>
+              <div className="flex items-center gap-1 sm:gap-2">
+                <Button variant="ghost" size="icon" className="h-9 w-9">
+                  <Bell className="h-5 w-5" />
+                  <span className="sr-only">Notifications</span>
+                </Button>
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
+                    <AvatarImage src="" alt="User" />
+                    <AvatarFallback>{getInitials()}</AvatarFallback>
+                  </Avatar>
+                  <div className="hidden md:block text-sm">
+                    <div className="font-medium">{user?.fullName || user?.username}</div>
+                    <div className="text-xs text-muted-foreground">{user?.role}</div>
+                  </div>
+                </div>
+                <Button variant="ghost" size="icon" onClick={handleLogout} className="h-9 w-9">
+                  <LogOut className="h-5 w-5" />
+                  <span className="sr-only">Log out</span>
+                </Button>
+              </div>
             </div>
-          </div>
-        </header>
+          </header>
+        </div>
 
         {/* Main Content Area */}
         <div className="flex flex-1">
@@ -156,8 +158,12 @@ export default function AppLayout({ children }: AppLayoutProps) {
             </div>
           </div>
 
-          {/* Page Content */}
-          <main className="flex-1 bg-[#F5F5F5] p-3 sm:p-4 md:p-6">{children}</main>
+          {/* Page Content - using the same max width constraint as header */}
+          <div className="flex-1 bg-[#F5F5F5] overflow-hidden">
+            <main className="mx-auto w-full max-w-screen-2xl p-3 sm:p-4 md:p-6">
+              {children}
+            </main>
+          </div>
         </div>
       </div>
     </ProtectedRoute>

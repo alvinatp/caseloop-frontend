@@ -250,8 +250,8 @@ export default function ResourcesPage() {
 
   return (
     <div className="p-0">
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex flex-col gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8">
+        <div className="flex flex-col gap-2 sm:gap-4">
           <h1 className="text-2xl font-bold tracking-tight text-[#333333]">Find Resources</h1>
           <p className="text-[#555555] text-base">Search for resources by name, category, or location</p>
         </div>
@@ -261,7 +261,7 @@ export default function ResourcesPage() {
           <Dialog open={isAddResourceOpen} onOpenChange={setIsAddResourceOpen}>
             <DialogTrigger asChild>
               <button 
-                className="ml-auto py-2.5 px-5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg flex items-center transition-colors ease-in-out"
+                className="mt-4 sm:mt-0 py-2.5 px-5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg flex items-center transition-colors ease-in-out"
                 type="button"
               >
                 <Plus className="h-5 w-5 mr-2 stroke-[2.5]" />
@@ -449,8 +449,8 @@ export default function ResourcesPage() {
 
       {/* Search and Filter Bar */}
       <div className="mb-6">
-        <div className="flex flex-col sm:flex-row gap-4 mb-4">
-          <div className="flex-1">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 w-full">
+          <div className="w-full">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#555555]" />
               <Input
@@ -480,7 +480,7 @@ export default function ResourcesPage() {
           <div className="w-full sm:w-auto">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" className="w-full sm:w-auto h-[48px] border-[#CCCCCC]">
+                <Button variant="outline" className="w-full h-[48px] border-[#CCCCCC]">
                   <Filter className="mr-2 h-5 w-5" />
                   Filters
                 </Button>
@@ -575,7 +575,7 @@ export default function ResourcesPage() {
       )}
 
       {/* Resources List */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {filteredResources.map((resource) => (
           <ResourceCard key={resource.id} resource={resource} />
         ))}
@@ -766,7 +766,7 @@ function ResourceCard({ resource }: ResourceCardProps) {
   return (
     <Card className="flex flex-col h-full border border-[#E0E0E0] shadow-sm hover:shadow-md transition-shadow duration-200">
       <CardHeader className="p-4">
-        <div className="flex justify-between items-start gap-4">
+        <div className="flex justify-between items-start gap-2">
           <div className="min-w-0 flex-1">
             <CardTitle className="text-lg font-bold text-[#333333] truncate">
               {resource.organization}
@@ -775,7 +775,7 @@ function ResourceCard({ resource }: ResourceCardProps) {
               {resource.program ? `${resource.program} • ${resource.category}` : resource.category}
             </CardDescription>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1 flex-shrink-0">
             <span className={`text-xs px-2 py-1 rounded-full font-medium whitespace-nowrap ${statusColors[normalizedStatus]}`}>
               {statusText[normalizedStatus]}
             </span>
@@ -885,28 +885,28 @@ function ResourceCard({ resource }: ResourceCardProps) {
           </p>
         )}
         
-        <div className="space-y-2 text-sm">
+        <div className="space-y-1 sm:space-y-2 text-sm">
           {address && (
             <div className="flex items-start">
-              <MapPin className="h-4 w-4 text-[#666666] mt-0.5 mr-2 flex-shrink-0" />
-              <span className="text-[#555555] line-clamp-2">{address}</span>
+              <MapPin className="h-4 w-4 text-[#666666] mt-0.5 mr-1.5 flex-shrink-0" />
+              <span className="text-[#555555] line-clamp-2 text-xs sm:text-sm">{address}</span>
             </div>
           )}
           
           {phone && (
             <div className="flex items-center">
-              <Phone className="h-4 w-4 text-[#666666] mr-2 flex-shrink-0" />
-              <span className="text-[#555555] truncate">{phone}</span>
+              <Phone className="h-4 w-4 text-[#666666] mr-1.5 flex-shrink-0" />
+              <span className="text-[#555555] truncate text-xs sm:text-sm">{phone}</span>
             </div>
           )}
           
           {website && (
             <div className="flex items-center">
-              <Globe className="h-4 w-4 text-[#666666] mr-2 flex-shrink-0" />
+              <Globe className="h-4 w-4 text-[#666666] mr-1.5 flex-shrink-0" />
               <a href={website.startsWith('http') ? website : `https://${website}`} 
                  target="_blank" 
                  rel="noopener noreferrer"
-                 className="text-[#007BFF] hover:underline truncate">
+                 className="text-[#007BFF] hover:underline truncate text-xs sm:text-sm">
                 {website}
               </a>
             </div>
@@ -914,11 +914,11 @@ function ResourceCard({ resource }: ResourceCardProps) {
         </div>
       </CardContent>
 
-      <CardFooter className="p-4 flex justify-between items-center gap-4 border-t border-[#EEEEEE]">
-        <div className="text-xs text-[#999999] truncate">
+      <CardFooter className="p-3 sm:p-4 flex justify-between items-center gap-2 sm:gap-4 border-t border-[#EEEEEE]">
+        <div className="text-xs text-[#999999] truncate max-w-[120px] sm:max-w-none">
           Updated {formatDate(resource.lastUpdated)}
         </div>
-        <Button variant="outline" size="sm" className="text-xs h-8 whitespace-nowrap flex-shrink-0" asChild>
+        <Button variant="outline" size="sm" className="text-xs h-7 sm:h-8 px-2 sm:px-3 whitespace-nowrap flex-shrink-0" asChild>
           <Link href={`/app/resources/${resource.id}`}>View Details</Link>
         </Button>
       </CardFooter>
