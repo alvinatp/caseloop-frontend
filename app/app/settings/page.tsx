@@ -57,13 +57,6 @@ export default function SettingsPage() {
               
               <div className="mt-4 space-y-2">
                 <Button className="w-full justify-start" variant="outline" asChild>
-                  <Link href="/app/settings/manage-resources">
-                    <Database className="w-4 h-4 mr-2" />
-                    Manage Resources
-                  </Link>
-                </Button>
-                
-                <Button className="w-full justify-start" variant="outline" asChild>
                   <Link href="/app/settings/scraper">
                     <FileText className="w-4 h-4 mr-2" />
                     Resource Scraper
