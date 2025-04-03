@@ -88,8 +88,7 @@ export default function Dashboard() {
 
   // Handle resource save/unsave
   const handleResourceSaveToggle = (resourceId: number, isSaved: boolean) => {
-    console.log(`Resource ${resourceId} ${isSaved ? 'saved' : 'unsaved'}`);
-    
+
     // Refresh the appropriate list based on the current tab
     if (activeTab === "recent") {
       fetchRecentResources();

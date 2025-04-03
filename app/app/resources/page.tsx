@@ -107,7 +107,6 @@ export default function ResourcesPage() {
     try {
       setLoading(true)
       setError(null)
-      console.log("Fetching all resources with params:", { page: currentPage, category: selectedCategories[0] })
       
       const params: { zipcode?: string; category?: string; page?: number } = { 
         page: currentPage
@@ -124,12 +123,11 @@ export default function ResourcesPage() {
       }
       
       const data = await getResources(params)
-      console.log("Resources API response:", data)
+
       
       if (data && data.resources) {
         setResources(data.resources)
         setTotalPages(data.totalPages || 1)
-        console.log("Set resources:", data.resources.length, "items")
       } else {
         console.error("Unexpected API response format:", data)
         setError("Received invalid data format from server")
@@ -242,10 +240,6 @@ export default function ResourcesPage() {
 
   // Update isAdmin check to be case-insensitive
   const isAdmin = user?.role?.toUpperCase() === 'ADMIN'
-  
-  // Debug user role
-  console.log('User role:', user?.role)
-  console.log('Is admin?', isAdmin)
 
   return (
     <div className="p-6">
