@@ -86,16 +86,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
                         <Settings className="h-6 w-6" />
                         <span className="font-medium">Settings</span>
                       </Link>
-                      
-                      {isAdmin && (
-                        <Link
-                          href="/app/settings/manage-resources"
-                          className="flex items-center gap-3 px-3 py-2 rounded-md text-[#333333] hover:bg-blue-50 hover:text-[#007BFF]"
-                        >
-                          <Database className="h-6 w-6" />
-                          <span className="font-medium">Manage Resources</span>
-                        </Link>
-                      )}
                     </nav>
                   </div>
                 </SheetContent>
@@ -162,16 +152,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
                   <Settings className="h-6 w-6" />
                   <span className="font-medium">Settings</span>
                 </Link>
-                
-                {isAdmin && (
-                  <Link
-                    href="/app/settings/manage-resources"
-                    className="flex items-center gap-3 px-3 py-2 rounded-md text-[#333333] hover:bg-blue-50 hover:text-[#007BFF]"
-                  >
-                    <Database className="h-6 w-6" />
-                    <span className="font-medium">Manage Resources</span>
-                  </Link>
-                )}
               </nav>
             </div>
           </div>
