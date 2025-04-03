@@ -545,7 +545,7 @@ export default function ResourceDetailPage({ params }: { params: { id: string } 
                       <div className="flex-1">
                         <Textarea
                           placeholder={`Comment as ${user?.fullName || user?.username || 'Case Manager'}...`}
-                          className="mb-4 min-h-[40px] border-b border-l-0 border-r-0 border-t-0 rounded-none focus:ring-0 border-[#E0E0E0] hover:border-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-[#007BFF] resize-none px-3 placeholder:text-gray-500 text-[15px] pt-2 pb-1 rounded-md"
+                          className="mb-4 min-h-[40px] border border-[#E0E0E0] hover:border-gray-400 focus-visible:ring-1 focus-visible:ring-[#007BFF] focus-visible:ring-offset-0 focus-visible:border-[#007BFF] resize-none px-3 placeholder:text-gray-500 text-[15px] p-2 rounded-md"
                           value={newNote}
                           onChange={(e) => setNewNote(e.target.value)}
                           onFocus={(e) => {
