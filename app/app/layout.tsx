@@ -41,13 +41,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
     <ProtectedRoute>
       <div className="min-h-screen flex flex-col">
         {/* Top Bar */}
-        <header className="h-[60px] bg-white border-b shadow-sm flex items-center px-6 w-full">
+        <header className="h-[60px] bg-white border-b shadow-sm flex items-center px-3 sm:px-4 md:px-6 w-full">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center md:hidden">
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Menu className="h-6 w-6" />
+                  <Button variant="ghost" size="icon" className="h-9 w-9">
+                    <Menu className="h-5 w-5" />
                     <span className="sr-only">Toggle menu</span>
                   </Button>
                 </SheetTrigger>
@@ -101,8 +101,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 </SheetContent>
               </Sheet>
             </div>
-            <div className="flex-1 flex items-center justify-center">
-              <div className="hidden md:block w-6"></div>
+            <div className="flex-1 flex items-center">
               <Link href="/app" className="hidden md:block">
                 <Image 
                   src="/casesync-logo.png" 
@@ -113,13 +112,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 />
               </Link>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon">
+            <div className="flex items-center gap-1 sm:gap-2">
+              <Button variant="ghost" size="icon" className="h-9 w-9">
                 <Bell className="h-5 w-5" />
                 <span className="sr-only">Notifications</span>
               </Button>
-              <div className="flex items-center gap-2">
-                <Avatar className="h-10 w-10">
+              <div className="flex items-center gap-1 sm:gap-2">
+                <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
                   <AvatarImage src="" alt="User" />
                   <AvatarFallback>{getInitials()}</AvatarFallback>
                 </Avatar>
@@ -128,7 +127,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                   <div className="text-xs text-muted-foreground">{user?.role}</div>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" onClick={handleLogout}>
+              <Button variant="ghost" size="icon" onClick={handleLogout} className="h-9 w-9">
                 <LogOut className="h-5 w-5" />
                 <span className="sr-only">Log out</span>
               </Button>
@@ -178,7 +177,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           </div>
 
           {/* Page Content */}
-          <main className="flex-1 bg-[#F5F5F5] p-6">{children}</main>
+          <main className="flex-1 bg-[#F5F5F5] p-3 sm:p-4 md:p-6">{children}</main>
         </div>
       </div>
     </ProtectedRoute>
