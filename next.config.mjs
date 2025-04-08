@@ -43,6 +43,22 @@ const nextConfig = {
       },
     ]
   },
+  // Redirect non-www to www
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'caseloop.org',
+          },
+        ],
+        destination: 'https://www.caseloop.org/:path*',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 mergeConfig(nextConfig, userConfig)
