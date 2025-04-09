@@ -140,7 +140,7 @@ export default function LandingPage() {
           <div className="grid gap-8 lg:grid-cols-2 lg:gap-16 items-center">
             <div className="space-y-4 md:space-y-6">
               <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
-                CaseSync: Up-to-date Resources for Case Managers
+                CaseLoop: Up-to-date Resources for Case Managers
               </h1>
               <p className="text-muted-foreground text-base sm:text-lg md:text-xl max-w-[700px] mb-4 md:mb-8">
                 Find reliable, current social service resources and share real-time updates with your network. Never
