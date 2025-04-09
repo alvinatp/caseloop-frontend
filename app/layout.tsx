@@ -3,7 +3,7 @@ import './globals.css'
 import { AuthProvider } from './context/AuthContext'
 
 export const metadata: Metadata = {
-  title: 'CaseSync',
+  title: 'CaseLoop',
   description: 'A platform for case managers to find and update information about social services and resources.',
   generator: 'v0.dev',
 }
