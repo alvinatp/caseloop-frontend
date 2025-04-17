@@ -52,7 +52,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                     <span className="sr-only">Toggle menu</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-[250px] bg-[#F5F5F5] p-0">
+                <SheetContent side="left" className="bg-[#F5F5F5] p-0">
                   <div className="flex flex-col h-full py-4">
                     <div className="px-4 mb-6 flex items-center justify-between">
                       <Link href="/app" className="flex-grow flex justify-center">
