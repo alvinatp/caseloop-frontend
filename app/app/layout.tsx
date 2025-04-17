@@ -59,8 +59,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
                         <Image 
                           src="/caseloop-logo.png" 
                           alt="CaseSync Logo" 
-                          width={120} 
-                          height={28} 
+                          width={80} 
+                          height={23} 
                           priority
                         />
                       </Link>
@@ -99,8 +99,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 <Image 
                   src="/caseloop-logo.png" 
                   alt="CaseSync Logo" 
-                  width={110} 
-                  height={28} 
+                  width={90} 
+                  height={20} 
                   priority
                 />
               </Link>

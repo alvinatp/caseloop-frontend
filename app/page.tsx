@@ -106,12 +106,12 @@ export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between px-4 md:px-6">
+        <div className="flex h-16 items-center justify-between px-6 md:px-12 max-w-full mx-auto">
           <div className="flex items-center gap-2">
-            <Image src="/caseloop-logo.png" alt="CaseSync Logo" width={110} height={25} priority />
+            <Image src="/caseloop-logo.png" alt="CaseSync Logo" width={80} height={20} priority />
           </div>
 
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-6 pr-4">
             <Link href="#features" className="text-sm font-medium hover:text-primary">
               Features
             </Link>
@@ -126,7 +126,7 @@ export default function LandingPage() {
             </Button>
           </nav>
 
-          <div className="md:hidden">
+          <div className="md:hidden pr-2">
             <Button size="sm" asChild>
               <Link href="/app">Get Started</Link>
             </Button>
