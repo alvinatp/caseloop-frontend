@@ -57,7 +57,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                     <div className="px-4 mb-6 flex items-center justify-between">
                       <Link href="/app" className="flex-grow flex justify-center">
                         <Image 
-                          src="/casesync-logo.png" 
+                          src="/caseloop-logo.png" 
                           alt="CaseSync Logo" 
                           width={120} 
                           height={28} 
@@ -97,7 +97,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <div className="flex-1 flex items-center justify-center md:justify-start">
               <Link href="/app" className="hidden md:block">
                 <Image 
-                  src="/casesync-logo.png" 
+                  src="/caseloop-logo.png" 
                   alt="CaseSync Logo" 
                   width={110} 
                   height={28} 
