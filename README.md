@@ -2,6 +2,8 @@
 
 A web app for case managers to find and share social service resources.
 
+**Live:** [caseloop.app](https://caseloop.app)
+
 ## Features
 
 - Real-time resource updates
