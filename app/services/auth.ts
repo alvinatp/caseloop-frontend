@@ -1,11 +1,7 @@
-import axios from 'axios';
+import { supabase } from '@/lib/supabase';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
-
-// Helper function to check if code is running on the client side
 const isClient = typeof window !== 'undefined';
 
-// Type definitions
 export interface LoginCredentials {
   username: string;
   password: string;
@@ -25,72 +21,64 @@ export interface User {
   role: string;
 }
 
-// Register a new user
 export const register = async (userData: RegisterData) => {
-  try {
-    const response = await axios.post(`${API_URL}/auth/register`, userData);
-    return response.data;
-  } catch (error) {
-    // Rethrow for handling in components
-    throw error;
-  }
+  throw new Error("Registration is currently disabled. Please contact your administrator.");
 };
 
-// Login a user
 export const login = async (credentials: LoginCredentials) => {
-  const response = await axios.post(`${API_URL}/auth/login`, credentials);
-  if (response.data.token && isClient) {
-    localStorage.setItem('token', response.data.token);
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('username', credentials.username)
+    .eq('password_hash', credentials.password)
+    .single();
+
+  if (error || !data) {
+    throw new Error("Invalid username or password");
   }
-  return response.data;
+
+  const user: User = {
+    id: data.id,
+    username: data.username,
+    fullName: data.email,
+    role: 'CASE_MANAGER',
+  };
+
+  if (isClient) {
+    localStorage.setItem('token', `session-${data.id}`);
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  return { token: `session-${data.id}`, user };
 };
 
-// Logout a user
 export const logout = () => {
   if (isClient) {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
 };
 
-// Get current user
 export const getCurrentUser = async (): Promise<User | null> => {
-  if (!isClient) {
-    return null;
-  }
-  
+  if (!isClient) return null;
+
   const token = localStorage.getItem('token');
-  
-  if (!token) {
-    return null;
+  if (!token) return null;
+
+  const userStr = localStorage.getItem('user');
+  if (userStr) {
+    return JSON.parse(userStr);
   }
-  
-  try {
-    const response = await axios.get(`${API_URL}/auth/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching current user:', error);
-    localStorage.removeItem('token');
-    return null;
-  }
+  return null;
 };
 
-// Check if user is logged in
 export const isAuthenticated = (): boolean => {
-  if (!isClient) {
-    return false;
-  }
+  if (!isClient) return false;
   return !!localStorage.getItem('token');
 };
 
-// Get auth header
 export const getAuthHeader = () => {
-  if (!isClient) {
-    return {};
-  }
+  if (!isClient) return {};
   const token = localStorage.getItem('token');
   return token ? { Authorization: `Bearer ${token}` } : {};
-}; 
+};

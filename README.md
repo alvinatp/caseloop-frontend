@@ -1,6 +1,6 @@
-# MyCaseNote
+# CaseLoop
 
-A modern web application designed to help case managers find and share reliable, up-to-date social service resources.
+A web app for case managers to find and share social service resources.
 
 ## Features
 

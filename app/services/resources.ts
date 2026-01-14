@@ -1,9 +1,5 @@
-import axios from 'axios';
-import { getAuthHeader } from './auth';
+import { supabase } from '@/lib/supabase';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
-
-// Type definitions
 export interface Resource {
   id: number;
   organization: string;
@@ -22,7 +18,7 @@ export interface Resource {
   };
   zipcode: string;
   notes: Array<{
-    userId: number;
+    userId: string;
     username: string;
     content: string;
     timestamp: string;
@@ -41,146 +37,200 @@ export interface ResourceNoteData {
   content: string;
 }
 
-// Get all resources with optional filters
+const mapDbToResource = (row: any, notes: any[] = []): Resource => ({
+  id: row.id,
+  organization: row.organization,
+  program: row.program,
+  category: row.category,
+  status: row.status,
+  contactDetails: row.contact_details || {},
+  zipcode: row.zipcode || '',
+  notes: notes.map(n => ({
+    userId: n.user_id,
+    username: n.username,
+    content: n.content,
+    timestamp: n.created_at,
+  })),
+  createdAt: row.created_at,
+  lastUpdated: row.last_updated,
+});
+
 export const getResources = async (params?: { page?: number; category?: string; zipcode?: string }) => {
-  try {
-    const response = await axios.get<{
-      currentPage: number;
-      totalPages: number;
-      totalResources: number;
-      resources: Resource[];
-    }>(`${API_URL}/resources`, { params });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching resources:', error);
-    throw error;
+  const page = params?.page || 1;
+  const limit = 15;
+  const offset = (page - 1) * limit;
+
+  let query = supabase.from('resources').select('*', { count: 'exact' });
+
+  if (params?.category) {
+    query = query.eq('category', params.category);
   }
+  if (params?.zipcode) {
+    query = query.eq('zipcode', params.zipcode);
+  }
+
+  const { data, error, count } = await query
+    .order('last_updated', { ascending: false })
+    .range(offset, offset + limit - 1);
+
+  if (error) throw error;
+
+  const totalResources = count || 0;
+  const totalPages = Math.ceil(totalResources / limit);
+
+  return {
+    currentPage: page,
+    totalPages,
+    totalResources,
+    resources: (data || []).map(r => mapDbToResource(r)),
+  };
 };
 
-// Get a single resource by ID
 export const getResourceById = async (id: string | number): Promise<Resource> => {
-  try {
-    const response = await axios.get<Resource>(`${API_URL}/resources/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Error fetching resource with ID ${id}:`, error);
-    throw error;
-  }
+  const { data: resource, error } = await supabase
+    .from('resources')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) throw error;
+
+  const { data: notes } = await supabase
+    .from('resource_notes')
+    .select('*')
+    .eq('resource_id', id)
+    .order('created_at', { ascending: false });
+
+  return mapDbToResource(resource, notes || []);
 };
 
-// Update a resource's details (requires authentication)
 export const updateResourceDetails = async (id: string | number, updateData: ResourceUpdateData) => {
-  try {
-    const response = await axios.put(`${API_URL}/resources/${id}`, updateData, {
-      headers: { ...getAuthHeader() },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(`Error updating resource with ID ${id}:`, error);
-    throw error;
-  }
+  const updates: any = { last_updated: new Date().toISOString() };
+
+  if (updateData.status) updates.status = updateData.status;
+  if (updateData.contactDetails) updates.contact_details = updateData.contactDetails;
+
+  const { data, error } = await supabase
+    .from('resources')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return mapDbToResource(data);
 };
 
-// Add a note to a resource (requires authentication)
 export const addResourceNote = async (id: string | number, noteData: ResourceNoteData) => {
-  try {
-    const response = await axios.post(`${API_URL}/resources/${id}/notes`, { notes: noteData.content }, {
-      headers: { ...getAuthHeader() },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(`Error adding note to resource with ID ${id}:`, error);
-    throw error;
-  }
+  const { data, error } = await supabase
+    .from('resource_notes')
+    .insert({
+      resource_id: id,
+      user_id: null,
+      username: 'Anonymous',
+      content: noteData.content,
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 };
 
-// Search resources
 export const searchResources = async (query: string, params?: { page?: number; category?: string; zipcode?: string }) => {
-  try {
-    const response = await axios.get<{
-      currentPage: number;
-      totalPages: number;
-      totalResources: number;
-      resources: Resource[];
-    }>(`${API_URL}/resources/search`, {
-      params: { query, ...params },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error searching resources:', error);
-    throw error;
+  const page = params?.page || 1;
+  const limit = 15;
+  const offset = (page - 1) * limit;
+
+  let dbQuery = supabase
+    .from('resources')
+    .select('*', { count: 'exact' })
+    .or(`organization.ilike.%${query}%,program.ilike.%${query}%,category.ilike.%${query}%`);
+
+  if (params?.category) {
+    dbQuery = dbQuery.eq('category', params.category);
   }
+  if (params?.zipcode) {
+    dbQuery = dbQuery.eq('zipcode', params.zipcode);
+  }
+
+  const { data, error, count } = await dbQuery
+    .order('last_updated', { ascending: false })
+    .range(offset, offset + limit - 1);
+
+  if (error) throw error;
+
+  const totalResources = count || 0;
+  const totalPages = Math.ceil(totalResources / limit);
+
+  return {
+    currentPage: page,
+    totalPages,
+    totalResources,
+    resources: (data || []).map(r => mapDbToResource(r)),
+  };
 };
 
-// Get recent updates
-export const getRecentUpdates = async (since: string, page: number = 1, limit: number = 15): Promise<{
-  resources: Resource[];
-  currentPage: number;
-  totalPages: number;
-  totalResources: number;
-}> => {
-  try {
-    const response = await axios.get<{
-      resources: Resource[];
-      currentPage: number;
-      totalPages: number;
-      totalResources: number;
-    }>(`${API_URL}/resources/updates`, {
-      params: { since, page, limit },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching recent updates:', error);
-    throw error;
-  }
+export const getRecentUpdates = async (since: string, page: number = 1, limit: number = 15) => {
+  const offset = (page - 1) * limit;
+
+  const { data, error, count } = await supabase
+    .from('resources')
+    .select('*', { count: 'exact' })
+    .gte('last_updated', since)
+    .order('last_updated', { ascending: false })
+    .range(offset, offset + limit - 1);
+
+  if (error) throw error;
+
+  const totalResources = count || 0;
+  const totalPages = Math.ceil(totalResources / limit);
+
+  return {
+    resources: (data || []).map(r => mapDbToResource(r)),
+    currentPage: page,
+    totalPages,
+    totalResources,
+  };
 };
 
-// Save a resource
 export const saveResource = async (id: string | number) => {
-  try {
-    // Ensure id is a number
-    const numericId = typeof id === 'string' ? parseInt(id) : id;
-    
-    const response = await axios.post(`${API_URL}/resources/${numericId}/save`, {}, {
-      headers: { ...getAuthHeader() }
-    });
-    return response.data;
-  } catch (error) {
-    console.error(`Error saving resource with ID ${id}:`, error);
-    throw error;
-  }
+  const { error } = await supabase
+    .from('saved_resources')
+    .insert({ resource_id: id, user_id: null });
+
+  if (error && error.code !== '23505') throw error;
+  return { success: true };
 };
 
-// Unsave a resource
 export const unsaveResource = async (id: string | number) => {
-  try {
-    // Ensure id is a number
-    const numericId = typeof id === 'string' ? parseInt(id) : id;
-    
-    const response = await axios.delete(`${API_URL}/resources/${numericId}/save`, {
-      headers: { ...getAuthHeader() }
-    });
-    return response.data;
-  } catch (error) {
-    console.error(`Error unsaving resource with ID ${id}:`, error);
-    throw error;
-  }
+  const { error } = await supabase
+    .from('saved_resources')
+    .delete()
+    .eq('resource_id', id);
+
+  if (error) throw error;
+  return { success: true };
 };
 
-// Get user's saved resources
 export const getSavedResources = async (): Promise<Resource[]> => {
-  try {
-    const response = await axios.get<Resource[]>(`${API_URL}/resources/saved`, {
-      headers: { ...getAuthHeader() }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching saved resources:', error);
-    throw error;
-  }
+  const { data: saved, error } = await supabase
+    .from('saved_resources')
+    .select('resource_id');
+
+  if (error) throw error;
+  if (!saved || saved.length === 0) return [];
+
+  const resourceIds = saved.map(s => s.resource_id);
+  const { data: resources, error: resourceError } = await supabase
+    .from('resources')
+    .select('*')
+    .in('id', resourceIds);
+
+  if (resourceError) throw resourceError;
+  return (resources || []).map(r => mapDbToResource(r));
 };
 
-// Create a new resource
 export const createResource = async (data: {
   organization: string;
   program?: string;
@@ -189,26 +239,24 @@ export const createResource = async (data: {
   contactDetails: Resource['contactDetails'];
   zipcode: string;
 }) => {
-  try {
-    const response = await axios.post(`${API_URL}/resources/create`, data, {
-      headers: { ...getAuthHeader() }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error creating resource:', error);
-    throw error;
-  }
+  const { data: resource, error } = await supabase
+    .from('resources')
+    .insert({
+      organization: data.organization,
+      program: data.program,
+      category: data.category,
+      status: data.status,
+      contact_details: data.contactDetails,
+      zipcode: data.zipcode,
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return mapDbToResource(resource);
 };
 
-// Create resources from HTML content
 export const createResourcesFromHtml = async (html: string, defaultCategory?: string) => {
-  try {
-    const response = await axios.post(`${API_URL}/resources/import`, { html, defaultCategory }, {
-      headers: { ...getAuthHeader() }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error creating resources from HTML:', error);
-    throw error;
-  }
-}; 
+  console.log('HTML import not supported in demo mode');
+  return { success: false, message: 'HTML import not supported in demo mode' };
+};

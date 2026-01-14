@@ -1,14 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cal+Sans&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+:root {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Cal Sans', 'Inter', system-ui, sans-serif;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+body {
+  font-family: var(--font-sans);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+@layer components {
+  /* Chunky card - visible 3D effect with bottom highlight */
+  .chunky-card {
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.06),
+      0 2px 4px rgba(0, 0, 0, 0.08),
+      0 4px 8px rgba(0, 0, 0, 0.06),
+      inset 0 -2px 0 0 #e8e8e7,
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+  }
+
+  /* Bento container - visible border shadow */
+  .bento-card {
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.08),
+      0 2px 8px rgba(0, 0, 0, 0.06),
+      0 8px 24px rgba(0, 0, 0, 0.04),
+      inset 0 -2px 0 0 #e5e5e4,
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+  }
+
+  .card-shadow {
+    box-shadow: 0 1px 2px rgba(95, 74, 46, 0.08),
+                0 4px 6px rgba(95, 74, 46, 0.04),
+                0 24px 40px -16px rgba(104, 75, 37, 0.08);
+  }
+
+  .metal-shadow {
+    box-shadow: 0 0 0 1px rgba(14, 63, 126, 0.06),
+                0 1px 1px -0.5px rgba(42, 51, 70, 0.03),
+                0 2px 2px -1px rgba(42, 51, 70, 0.04),
+                0 3px 3px -1.5px rgba(42, 51, 70, 0.04),
+                0 5px 5px -2.5px rgba(42, 51, 70, 0.03),
+                0 10px 10px -5px rgba(42, 51, 70, 0.03),
+                0 24px 24px -8px rgba(42, 51, 70, 0.03);
   }
 }
 
@@ -20,8 +63,8 @@ body {
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 172 66% 50%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
@@ -32,56 +75,10 @@ body {
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --ring: 172 66% 50%;
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
   }
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
+
 }
 
 @layer base {
@@ -92,3 +89,121 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Teal color utilities */
+.text-primary-500 { color: #2dd4bf; }
+.text-primary-600 { color: #14b8a6; }
+.bg-primary-50 { background-color: #f0fdfa; }
+.bg-primary-500 { background-color: #2dd4bf; }
+.bg-primary-600 { background-color: #14b8a6; }
+.ring-primary-500 { --tw-ring-color: #2dd4bf; }
+.border-primary-500 { border-color: #2dd4bf; }
+
+/* Animations */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-50% - var(--gap, 1rem) / 2)); }
+}
+
+@keyframes shine-trail {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+@keyframes ripple-effect {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes scan {
+  0%, 100% {
+    transform: translateY(-80px);
+    opacity: 0;
+  }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% {
+    transform: translateY(80px);
+    opacity: 0;
+  }
+}
+
+@keyframes scan-vertical {
+  0%, 100% {
+    transform: translateY(-100%);
+  }
+  50% {
+    transform: translateY(300%);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.animate-marquee {
+  animation: marquee var(--duration, 40s) linear infinite;
+}
+
+.animate-shine-trail .shine-overlay {
+  animation: shine-trail 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-ripple {
+  animation: ripple-effect 2s ease-in-out infinite;
+}
+
+.animate-typing {
+  animation: typing 0.5s steps(9) forwards;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Scrollbar hide */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Snap scroll */
+.snap-x { scroll-snap-type: x mandatory; }
+.snap-center { scroll-snap-align: center; }
